@@ -39,7 +39,7 @@ export default class Cell {
             } else {
                 p5.fill(255)
             }
-            p5.noStroke()
+            p5.stroke(255)
             p5.rect(this.x * cellSize, this.y * cellSize, cellSize, cellSize)
         }
 

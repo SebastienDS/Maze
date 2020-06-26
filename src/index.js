@@ -1,14 +1,24 @@
 import Maze from './Maze.js'
-import config from './config.js'
 
-const maze = new Maze(config.COLS, config.ROWS, { x: 0, y: 0}, { x: config.COLS - 1, y: config.ROWS - 1})
-const mazeGenerator = maze.generate()
+let maze
+let mazeGenerator
+
+const cellSize = 20
+let COLS, ROWS
+let WIDTH, HEIGHT
 
 new p5(p5 => {
 
 	p5.setup = function () {
-		p5.createCanvas(config.WIDTH, config.HEIGHT)
-    }
+		COLS = Math.trunc(p5.windowWidth * 0.9 / cellSize) - 1
+		ROWS = Math.trunc(p5.windowHeight * 0.9 / cellSize) - 1
+		WIDTH = COLS * cellSize
+		HEIGHT = ROWS * cellSize 
+		p5.createCanvas(WIDTH, HEIGHT)
+
+		maze = new Maze(COLS, ROWS, { x: 0, y: 0}, { x: COLS - 1, y: ROWS - 1})
+		mazeGenerator = maze.generate()
+	}
     
 	p5.draw = function () {
         p5.background(0)
