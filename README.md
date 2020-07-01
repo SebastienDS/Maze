@@ -1,3 +1,7 @@
+# Maze
+
+https://sebastiends.github.io/Maze/
+
 # Maze Generator Algorithm
 
 1. Choose the initial cell, mark it as visited and push it to the stack

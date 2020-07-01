@@ -2,18 +2,21 @@ import Cell from './Cell.js'
 
 export default class Maze {
 
-    constructor (cols, rows, start, finish) {
+    constructor (cols, rows, start, finish, animated) {
         this.cols = cols
         this.rows = rows
         this.start = start
         this.finish = finish
-        this.grid = this.createGrid(cols, rows)
+        this.grid = null
+        this.generation = null
+        this.animated = animated
+        this.createMaze()
     }
 
-    createGrid (cols, rows) {
+    createGrid () {
         const grid = []
-        for (let j = 0; j < rows; j++) {
-            for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < this.rows; j++) {
+            for (let i = 0; i < this.cols; i++) {
                 grid.push(new Cell(i, j))
             }
         }
@@ -46,15 +49,13 @@ export default class Maze {
         while (stack.length > 0) {
             const currentCell = stack.pop()
             currentCell.active = true
+            yield
             const neighbours = this.getNeighbours(currentCell).filter(n => !n.visited)
-
             if (neighbours.length > 0) {
                 stack.push(currentCell)
                 const chosenNeighbours = neighbours[Math.floor(Math.random() * neighbours.length)]
 
                 currentCell.removeWallBetween(chosenNeighbours)
-                yield
-
                 chosenNeighbours.visited = true
                 stack.push(chosenNeighbours)
             }
@@ -77,6 +78,29 @@ export default class Maze {
         return neighbours
     }
 
+    createMaze () {
+        this.grid = this.createGrid()
+        this.createGeneration()
+        
+        if (!this.animated) {
+            while (this.nextStep()) {}
+        }
+    }
 
+    createGeneration () {
+        this.generation = this.generate()
+    }
+
+    nextStep () {
+        if (this.generation === null) {
+            return false
+        }
+        const result = this.generation.next()
+        if (result.done) {
+            this.generation = null
+            return false
+        }
+        return true
+    }
 
 }
